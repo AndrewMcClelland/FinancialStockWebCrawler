@@ -35,10 +35,10 @@ class gather_info:
             else:
                 ticker_list.append(temp_ticker_input)
 
-        print(ticker_list)
+        return ticker_list
 
     @staticmethod
-    def get_features():
+    def get_desired_features():
         while True:
             feature_list = []
 
@@ -55,8 +55,21 @@ class gather_info:
             elif match_feature_input == 'None':
                 print("You may only enter a '1' or a '0'. Please try again.\n\n")
 
-        print(feature_list)
+        return feature_list
+
+    @staticmethod
+    def get_features():
+        desired_features = gather_info.get_desired_features()
+        desired_tickers = gather_info.get_tickers()
+
+        for each_ticker in desired_tickers:
+
+            yahoo_url_source = str(urllib.request.urlopen('https://finance.yahoo.com/quote/' + each_ticker + '?ltr=1').read())
+
+            if desired_features[0] == 1: # Open price
+            if desired_features[1] == 1:  # Prev close price
+            if desired_features[2] == 1:  # Market cap
+            if desired_features[3] == 1:  # P/E ratio
 
 
-gather_info.get_tickers()
 gather_info.get_features()
