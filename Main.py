@@ -40,7 +40,6 @@ class gather_info:
     @staticmethod
     def get_desired_features():
         while True:
-            feature_list = []
 
             print("Please enter a 1 for each feature you would like, and a 0 for a feature you wish to ignore.\n")
             feature_input = input("|Open|\t|Prev Close|\t|Market Cap|\t|P/E Ratio (ttm)|\n")
@@ -48,28 +47,41 @@ class gather_info:
             match_feature_input = str(re.match('^[0-1]*$', feature_input))
 
             if len(feature_input) == 4 and match_feature_input != 'None':
-                feature_list.append(feature_input)
+                feature_list = feature_input
                 break
             elif len(feature_input) != 4:
                 print("You entered too many values. Please try again.\n\n")
             elif match_feature_input == 'None':
                 print("You may only enter a '1' or a '0'. Please try again.\n\n")
 
+        feature_list = list(str(feature_list))
         return feature_list
 
     @staticmethod
     def get_features():
-        desired_features = gather_info.get_desired_features()
+
         desired_tickers = gather_info.get_tickers()
+        desired_features = gather_info.get_desired_features()
 
         for each_ticker in desired_tickers:
 
             yahoo_url_source = str(urllib.request.urlopen('https://finance.yahoo.com/quote/' + each_ticker + '?ltr=1').read())
 
-            if desired_features[0] == 1: # Open price
-            if desired_features[1] == 1:  # Prev close price
-            if desired_features[2] == 1:  # Market cap
-            if desired_features[3] == 1:  # P/E ratio
+            if desired_features[0] == '1':  # Open price
+                open_price = yahoo_url_source.split('$OPEN.1">')[1].split('</td></tr>')[0]
 
+            if desired_features[1] == '1':  # Prev close price
+                prev_close_price = yahoo_url_source.split('$PREV_CLOSE.1">')[1].split('</td></tr>')[0]
+
+            if desired_features[2] == '1':  # Market cap
+                market_cap = yahoo_url_source.split('$MARKET_CAP.1">')[1].split('</td></tr>')[0]
+
+                if "B" in market_cap:
+                    market_cap = float(market_cap.replace('B', '')) * 1000000000
+                elif "M" in market_cap:
+                    market_cap = float(market_cap.replace('M', '')) * 1000000
+
+            if desired_features[3] == '1':  # P/E ratio
+                pe_ratio = yahoo_url_source.split('$PE_RATIO.1">')[1].split('</td></tr>')[0]
 
 gather_info.get_features()
