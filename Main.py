@@ -5,6 +5,7 @@ import os
 import time
 import re
 import urllib.request
+import subprocess
 
 class gather_info:
     @staticmethod
@@ -60,6 +61,8 @@ class gather_info:
     @staticmethod
     def get_features():
 
+        stock_info = pd.DataFrame(columns = ['Ticker', 'Open Price', 'Prev Close Price', 'Market Cap', 'P/E Ratio'])
+
         desired_tickers = gather_info.get_tickers()
         desired_features = gather_info.get_desired_features()
 
@@ -83,5 +86,17 @@ class gather_info:
 
             if desired_features[3] == '1':  # P/E ratio
                 pe_ratio = yahoo_url_source.split('$PE_RATIO.1">')[1].split('</td></tr>')[0]
+
+            stock_info = stock_info.append({'Ticker' :each_ticker, 'Open Price' :open_price, 'Prev Close Price' :prev_close_price, 'Market Cap' :market_cap, 'P/E Ratio' :pe_ratio}, ignore_index = True)
+
+            try:
+                stock_info.to_csv("stock_info.csv")
+                print('.csv created successfully.')
+                subprocess.check_call(['explorer', os.getcwd()])
+            except Exception as e:
+                print('.csv file not created. Exception: ', e)
+
+
+
 
 gather_info.get_features()
