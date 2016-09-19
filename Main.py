@@ -2,10 +2,10 @@ __author__ = 'Andrew McClelland'
 
 import pandas as pd
 import os
-import time
 import re
 import urllib.request
 import subprocess
+import tkinter
 
 class gather_info:
     @staticmethod
@@ -87,7 +87,7 @@ class gather_info:
             if desired_features[3] == '1':  # P/E ratio
                 pe_ratio = yahoo_url_source.split('$PE_RATIO.1">')[1].split('</td></tr>')[0]
 
-            stock_info = stock_info.append({'Ticker' :each_ticker, 'Open Price' :open_price, 'Prev Close Price' :prev_close_price, 'Market Cap' :market_cap, 'P/E Ratio' :pe_ratio}, ignore_index = True)
+            stock_info = stock_info.append({'Ticker': each_ticker, 'Open Price': open_price, 'Prev Close Price': prev_close_price, 'Market Cap': market_cap, 'P/E Ratio': pe_ratio}, ignore_index = True)
 
             try:
                 stock_info.to_csv("stock_info.csv")
@@ -96,7 +96,20 @@ class gather_info:
             except Exception as e:
                 print('.csv file not created. Exception: ', e)
 
-
-
+        while True:
+            user_delete = str(input("Delete the .csv file? Enter 'Yes' or 'No': \n"))
+            if user_delete == 'Yes':
+                try:
+                    os.remove('stock_info.csv')
+                    print("Successfully removed .csv file.\n")
+                    break
+                except Exception as e:
+                    print('Could not delete file. Exception: \n', e)
+                    break
+            elif user_delete == 'No':
+                print('Did not delete file.\n')
+                break
+            else:
+                print('You entered something incorrectly.\n')
 
 gather_info.get_features()
